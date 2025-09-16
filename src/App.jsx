@@ -7,6 +7,7 @@ function App() {
   const [annualReturn, setAnnualReturn] = useState('7')
   const [yearsToRetirement, setYearsToRetirement] = useState('')
   const [results, setResults] = useState(null)
+  const [showRuleModal, setShowRuleModal] = useState(false)
 
   const calculateRetirement = () => {
     // Convert inputs to numbers
@@ -134,6 +135,94 @@ function App() {
                 each year without running out of money for at least 30 years. This calculation 
                 assumes your investments continue to grow during retirement.
               </p>
+              <button 
+                className="learn-more-btn"
+                onClick={() => setShowRuleModal(true)}
+              >
+                Learn More About the 4% Rule
+              </button>
+            </div>
+          </div>
+        )}
+
+        {showRuleModal && (
+          <div className="modal-overlay" onClick={() => setShowRuleModal(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h2>The 4% Rule: A Comprehensive Guide</h2>
+                <button 
+                  className="modal-close-btn"
+                  onClick={() => setShowRuleModal(false)}
+                  aria-label="Close modal"
+                >
+                  ×
+                </button>
+              </div>
+              
+              <div className="modal-body">
+                <section className="rule-section">
+                  <h3>What is the 4% Rule?</h3>
+                  <p>
+                    The 4% rule is a retirement planning guideline that suggests you can safely 
+                    withdraw 4% of your retirement portfolio in the first year of retirement, 
+                    then adjust that amount annually for inflation. This strategy is designed 
+                    to make your money last for at least 30 years.
+                  </p>
+                </section>
+
+                <section className="rule-section">
+                  <h3>Historical Background</h3>
+                  <p>
+                    The 4% rule was developed by financial advisor William Bengen in 1994. 
+                    His research analyzed historical market data from 1926-1992 and found that 
+                    a portfolio of 50% stocks and 50% bonds could sustain a 4% withdrawal rate 
+                    through various market conditions, including the Great Depression and 
+                    multiple recessions.
+                  </p>
+                </section>
+
+                <section className="rule-section">
+                  <h3>Key Assumptions</h3>
+                  <ul>
+                    <li><strong>Portfolio Composition:</strong> Typically assumes a balanced portfolio of stocks and bonds</li>
+                    <li><strong>Time Horizon:</strong> Designed for a 30-year retirement period</li>
+                    <li><strong>Inflation Adjustments:</strong> Annual increases to maintain purchasing power</li>
+                    <li><strong>No Additional Income:</strong> Assumes no Social Security, pensions, or part-time work</li>
+                    <li><strong>Consistent Withdrawals:</strong> Same percentage withdrawn regardless of market performance</li>
+                  </ul>
+                </section>
+
+                <section className="rule-section">
+                  <h3>Important Considerations</h3>
+                  <ul>
+                    <li><strong>Market Conditions:</strong> Current low interest rates and high valuations may require more conservative withdrawal rates</li>
+                    <li><strong>Sequence of Returns Risk:</strong> Poor market performance early in retirement can significantly impact portfolio longevity</li>
+                    <li><strong>Flexibility:</strong> The rule works best when you can adjust spending during market downturns</li>
+                    <li><strong>Healthcare Costs:</strong> Rising medical expenses may require additional planning beyond the 4% rule</li>
+                  </ul>
+                </section>
+
+                <section className="rule-section">
+                  <h3>Alternatives and Modifications</h3>
+                  <p>
+                    Some experts suggest more dynamic approaches, such as the "bucket strategy" 
+                    or variable withdrawal rates based on market performance. Others recommend 
+                    starting with 3.5% or using a "guardrails" approach where spending adjusts 
+                    based on portfolio performance.
+                  </p>
+                </section>
+
+                <section className="rule-section">
+                  <h3>Bottom Line</h3>
+                  <p>
+                    The 4% rule provides a useful starting point for retirement planning, but 
+                    it should be one tool among many. Consider your unique circumstances, risk 
+                    tolerance, and other income sources when planning your retirement withdrawals. 
+                    Regular reviews and adjustments may be necessary based on changing market 
+                    conditions and personal needs.
+                  </p>
+                </section>
+              </div>
             </div>
           </div>
         )}
