@@ -145,6 +145,34 @@ header p {
   color: #2d3748;
 }
 
+.result-card .subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.result-card.highlight {
+  background: #f0f8ff;
+  border-left: 4px solid #4a90e2;
+}
+
+.result-card.highlight .amount {
+  color: #4a90e2;
+}
+
+.input-section-divider {
+  margin: 2rem 0 1rem 0;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e1e5e9;
+}
+
+.input-section-divider h3 {
+  color: #555;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
 .explanation {
   margin-top: 2rem;
   padding: 1.5rem;
