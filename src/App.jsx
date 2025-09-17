@@ -6,7 +6,25 @@ function App() {
   const [monthlyContribution, setMonthlyContribution] = useState('')
   const [annualReturn, setAnnualReturn] = useState('7')
   const [yearsToRetirement, setYearsToRetirement] = useState('')
+  
+  // Real rate of return calculation inputs
+  const [nominalReturn, setNominalReturn] = useState('')
+  const [inflationRate, setInflationRate] = useState('')
+  
+  // Social security inputs
+  const [socialSecurityMonthly, setSocialSecurityMonthly] = useState('')
+  const [yearsUntilSocialSecurity, setYearsUntilSocialSecurity] = useState('')
+  
   const [results, setResults] = useState(null)
+
+  const calculateRealReturn = () => {
+    const nominal = parseFloat(nominalReturn) / 100 || 0
+    const inflation = parseFloat(inflationRate) / 100 || 0
+    
+    // Real rate = (1 + nominal) / (1 + inflation) - 1
+    const realRate = ((1 + nominal) / (1 + inflation) - 1) * 100
+    return realRate
+  }
 
   const calculateRetirement = () => {
     // Convert inputs to numbers
@@ -14,6 +32,10 @@ function App() {
     const monthlyContributionNum = parseFloat(monthlyContribution) || 0
     const annualReturnNum = parseFloat(annualReturn) / 100
     const yearsToRetirementNum = parseInt(yearsToRetirement) || 0
+    
+    // Social security inputs
+    const socialSecurityMonthlyNum = parseFloat(socialSecurityMonthly) || 0
+    const yearsUntilSocialSecurityNum = parseInt(yearsUntilSocialSecurity) || 0
 
     // Calculate future value of current savings
     const futureValueCurrentSavings = currentSavingsNum * Math.pow(1 + annualReturnNum, yearsToRetirementNum)
@@ -30,11 +52,24 @@ function App() {
     // 4% rule calculations
     const annualWithdrawal = totalRetirementSavings * 0.04
     const monthlyWithdrawal = annualWithdrawal / 12
+    
+    // Calculate social security income
+    const annualSocialSecurity = socialSecurityMonthlyNum * 12
+    
+    // Total annual income (withdrawal + social security)
+    const totalAnnualIncome = annualWithdrawal + annualSocialSecurity
+    const totalMonthlyIncome = totalAnnualIncome / 12
 
     setResults({
       totalSavings: totalRetirementSavings,
       annualWithdrawal: annualWithdrawal,
-      monthlyWithdrawal: monthlyWithdrawal
+      monthlyWithdrawal: monthlyWithdrawal,
+      annualSocialSecurity: annualSocialSecurity,
+      monthlySocialSecurity: socialSecurityMonthlyNum,
+      totalAnnualIncome: totalAnnualIncome,
+      totalMonthlyIncome: totalMonthlyIncome,
+      realRateOfReturn: nominalReturn && inflationRate ? calculateRealReturn() : null,
+      yearsUntilSocialSecurity: yearsUntilSocialSecurityNum
     })
   }
 
@@ -103,6 +138,60 @@ function App() {
             />
           </div>
 
+          <div className="input-section-divider">
+            <h3>Real Rate of Return Calculator</h3>
+          </div>
+
+          <div className="input-group">
+            <label htmlFor="nominalReturn">Nominal Annual Return (%)</label>
+            <input
+              type="number"
+              id="nominalReturn"
+              value={nominalReturn}
+              onChange={(e) => setNominalReturn(e.target.value)}
+              placeholder="e.g., 10"
+              step="0.1"
+            />
+          </div>
+
+          <div className="input-group">
+            <label htmlFor="inflationRate">Expected Inflation Rate (%)</label>
+            <input
+              type="number"
+              id="inflationRate"
+              value={inflationRate}
+              onChange={(e) => setInflationRate(e.target.value)}
+              placeholder="e.g., 3"
+              step="0.1"
+            />
+          </div>
+
+          <div className="input-section-divider">
+            <h3>Social Security Income</h3>
+          </div>
+
+          <div className="input-group">
+            <label htmlFor="socialSecurityMonthly">Monthly Social Security ($)</label>
+            <input
+              type="number"
+              id="socialSecurityMonthly"
+              value={socialSecurityMonthly}
+              onChange={(e) => setSocialSecurityMonthly(e.target.value)}
+              placeholder="e.g., 2500"
+            />
+          </div>
+
+          <div className="input-group">
+            <label htmlFor="yearsUntilSocialSecurity">Years Until Social Security Starts</label>
+            <input
+              type="number"
+              id="yearsUntilSocialSecurity"
+              value={yearsUntilSocialSecurity}
+              onChange={(e) => setYearsUntilSocialSecurity(e.target.value)}
+              placeholder="e.g., 35"
+            />
+          </div>
+
           <button onClick={calculateRetirement} className="calculate-btn">
             Calculate Retirement
           </button>
@@ -126,6 +215,29 @@ function App() {
               <h3>Monthly Withdrawal</h3>
               <p className="amount">{formatCurrency(results.monthlyWithdrawal)}</p>
             </div>
+
+            {results.realRateOfReturn && (
+              <div className="result-card">
+                <h3>Your Real Rate of Return</h3>
+                <p className="amount">{results.realRateOfReturn.toFixed(2)}%</p>
+              </div>
+            )}
+
+            {results.monthlySocialSecurity > 0 && (
+              <>
+                <div className="result-card">
+                  <h3>Monthly Social Security</h3>
+                  <p className="amount">{formatCurrency(results.monthlySocialSecurity)}</p>
+                  <p className="subtitle">Starting in {results.yearsUntilSocialSecurity} years</p>
+                </div>
+
+                <div className="result-card highlight">
+                  <h3>Total Monthly Retirement Income</h3>
+                  <p className="amount">{formatCurrency(results.totalMonthlyIncome)}</p>
+                  <p className="subtitle">Withdrawal + Social Security</p>
+                </div>
+              </>
+            )}
 
             <div className="explanation">
               <h3>About the 4% Rule</h3>
